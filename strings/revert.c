@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    fprintf(stdout, "%s.\n", pBuf);
+    fprintf(stdout, "%s\n", pBuf);
     free(pBuf);
 
     return 0;
