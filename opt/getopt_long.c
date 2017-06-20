@@ -8,7 +8,7 @@ int main(int argc, char **argv)
    int opt;
    int digit_optind = 0;
    int option_index = 0;
-   char *optstring = "a:b:c:d";
+   char *optstring = "a:b:c::d";
    const struct option long_options[] = {
        {"reqarg", required_argument, NULL, 'r'},
        {"noarg",  no_argument,       NULL, 'n'},
@@ -39,6 +39,10 @@ int main(int argc, char **argv)
             fprintf(stdout, "c = %s\n", optarg);
             break;
 
+        case ':':
+            fprintf(stdout, "Need parameter:%c\n", optopt);
+            break;
+
         case 'd':
             fprintf(stdout, "d = %s\n", optarg);
             break;
@@ -53,6 +57,10 @@ int main(int argc, char **argv)
 
         case 'o':
             fprintf(stdout, "o = %s\n", optarg);
+            break;
+
+        case '?':
+            fprintf(stdout, "unknown parameter: %c\n", optopt);
             break;
 
         default:
