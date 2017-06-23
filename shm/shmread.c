@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     struct shared_use_st *shared;
     int shmid;
 
-    shmid = shmget((key_t)1234, sizeof(struct shared_use_st), 0666|IPC_CREAT);
+    shmid = shmget((key_t)1234, sizeof(struct shared_use_st), 0666 | IPC_CREAT);
     if(-1 == shmid){
         perror("shmget failed");
         return 0;
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
         perror("shmat failed");
         goto out;
     }
-    printf("\nMemory attached at %p\n", shm);
+    printf("\nMemory attached at %d-%p\n", shmid, shm);
 
     shared = (struct shared_use_st*)shm;
     shared->written = 0;
