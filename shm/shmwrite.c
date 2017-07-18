@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     char buffer[BUFSIZ + 1];
     int shmid;
 
-    shmid = shmget((key_t)1234, sizeof(struct shared_use_st), 0666|IPC_CREAT);
+    shmid = shmget((key_t)SHM_KEY, sizeof(struct shared_use_st), 0666 | IPC_CREAT);
     if(-1 == shmid){
         perror("shmget failed");
         return 0;
