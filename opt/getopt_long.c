@@ -1,3 +1,4 @@
+/* For testing cmd: ./getopt_long -a 3 -b fanbing --reqarg ffff */
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -10,6 +11,7 @@ int main(int argc, char **argv)
    int option_index = 0;
    char *optstring = "a:b:c::d";
    const struct option long_options[] = {
+       /* name,     has_arg,        flag,   val */
        {"reqarg", required_argument, NULL, 'r'},
        {"noarg",  no_argument,       NULL, 'n'},
        {"optarg", optional_argument, NULL, 'o'},
@@ -18,7 +20,7 @@ int main(int argc, char **argv)
 
    while ( (opt = getopt_long(argc, argv, optstring, long_options, &option_index)) != -1)
    {
-#if 0
+#if 1
         printf("\nopt = %c\n", opt);
         printf("optarg = %s\n", optarg);
         printf("optind = %d\n", optind);
