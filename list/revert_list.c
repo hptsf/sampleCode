@@ -12,7 +12,7 @@ static int create_list(PList *list)
 {
     PList new_list = NULL;
     PList p_cur = NULL;
-    int cnt = 1;
+    int cnt = 13;
     int i = 0;
 
     if(NULL != *list){
