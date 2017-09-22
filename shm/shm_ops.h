@@ -12,7 +12,7 @@ typedef struct __SHARED_USE_ST
 
 void* shm_init(unsigned int shm_key);
 int shm_uninit(void* shm);
-int shm_write(void *shm, const char *buf, int len, int timeout); // seconds
-int shm_read(void *shm, char *buf, int len, int timeout);        // seconds
+int shm_write(void *shm, const char *buf, int len, int timeout); // milliseconds
+int shm_read(void *shm, char *buf, int len, int timeout);        // milliseconds
 
 #endif

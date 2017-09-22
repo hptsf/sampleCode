@@ -56,7 +56,7 @@ int shm_write(void *shm, const char *buf, int len, int timeout)
 
     do{
         if(1 == share->written){
-            usleep(1000000);
+            usleep(1000);
         }else{
             break;
         }
@@ -91,7 +91,7 @@ int shm_read(void *shm, char *buf, int len, int timeout)
 
     do{
         if(0 == share->written){
-           usleep(1000000);
+           usleep(1000);
         }else{
             break;
         }
