@@ -8,49 +8,31 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/shm.h>
-#include "shmdata.h"
+#include "shm_ops.h"
+
+#define SHM_KEY     12345
+#define BUFF_LEN    256
 
 int main(int argc, char *argv[])
 {
     int running = 1;
     void *shm = NULL;
-    struct shared_use_st *shared = NULL;
-    char buffer[BUFSIZ + 1];
-    int shmid;
+    char buf[BUFF_LEN];
 
-    shmid = shmget((key_t)SHM_KEY, sizeof(struct shared_use_st), 0666 | IPC_CREAT);
-    if(-1 == shmid){
-        perror("shmget failed");
+    shm = shm_init(SHM_KEY);
+    if(NULL == shm){
+        perror("shm init failed");
         return 0;
     }
 
-    shm = shmat(shmid, (void*)0, 0);
-    if((void*)-1 == shm){
-        perror("shmat failed");
-        goto out;
-    }
-    printf("Memory attached at %p\n", shm);
-
-    shared = (struct shared_use_st*)shm;
     while(running){
-        while(shared->written == 1){
-            sleep(1);
-            printf("Waiting...\n");
-        }
-        printf("Enter some text: ");
-        fgets(buffer, BUFSIZ, stdin);
-        strncpy(shared->text, buffer, TEXT_SZ);
-        shared->written = 1;
-        if(strncmp(buffer, "end", 3) == 0)
+        fprintf(stdout, "Input a string: ");
+        fgets(buf, BUFF_LEN, stdin);
+        shm_write(shm, buf, BUFF_LEN, 2);
+        if(0 == strncmp(buf, "end", 3))
             running = 0;
     }
-    if(-1 == shmdt(shm)){
-        perror("shmdt failed");
-        goto out;
-    }
-    sleep(2);
 
-out:
+    shm_uninit(shm);
     return 0;
 }

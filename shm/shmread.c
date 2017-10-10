@@ -1,53 +1,38 @@
-#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/shm.h>
-#include "shmdata.h"
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+#include "shm_ops.h"
+
+#define SHM_KEY     12345
+#define BUFF_LEN    256
 
 int main(int argc, char *argv[])
 {
     int running = 1;
     void *shm = NULL;
-    struct shared_use_st *shared;
-    int shmid;
+    char buf[BUFF_LEN];
+    int len = -1;
 
-    shmid = shmget((key_t)SHM_KEY, sizeof(struct shared_use_st), 0666 | IPC_CREAT);
-    if(-1 == shmid){
-        perror("shmget failed");
+    shm = shm_init(SHM_KEY);
+    if(NULL == shm){
+        perror("shm init failed");
         return 0;
     }
-    shm = shmat(shmid, 0, 0);
-    if((void*)-1 == shm){
-        perror("shmat failed");
-        goto out;
-    }
-    printf("\nMemory attached at %d-%p\n", shmid, shm);
 
-    shared = (struct shared_use_st*)shm;
-    shared->written = 0;
-    while(running){
-        if(shared->written != 0){
-            fprintf(stdout, "You wrote: %s", shared->text);
-            sleep(rand() % 3);
-            shared->written = 0;
-            if(strncmp(shared->text, "end", 3) == 0)
-                running = 0;
+    do{
+        memset(buf, 0x00, BUFF_LEN);
+        len = shm_read(shm, buf, BUFF_LEN, 3);
+        if(len < 0){
+            continue;
         }
-        else{
-            sleep(1);
-        }
-    }
+        fprintf(stdout, "Get a msg: %s\n", buf);
+        if(strncmp(buf, "end", 3) == 0)
+            running = 0;
+    }while(running);
 
-    if(-1 == shmdt(shm)){
-        perror("shmdt failed");
-        goto out;
-    }
-
-out:
-    if(shmctl(shmid, IPC_RMID, 0) == -1){
-        perror("remove shm failed");
-    }
-
+    shm_uninit(shm);
     return 0;
 }
 
