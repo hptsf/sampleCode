@@ -1,3 +1,9 @@
+/****************************************************************************************
+  * author            : tom
+  * date              : 20171010
+  * description       : source code for shm testing (SYSV)
+  *                      and Posix shared memory: shm_open/ftruncate/mmap/shm_unlink
+****************************************************************************************/
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
