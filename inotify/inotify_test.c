@@ -11,47 +11,41 @@
 
 #include "inotify_test.h"
 
-int logFlag = 0;
-
 int main(int argc,char **argv)
 {
-    int fd;
-    char filename[] = "printlog";
-    char readbuf[8] = {0};
-    int read_count = 0;
-
-    int inotifyFd,wd,j;
+    int inotifyFd = -1;
+    int wd = -1;
     char buf[BUF_LEN];
-    ssize_t numRead;
-    char *p;
-    struct inotify_event *event;
-    int flags;
+    ssize_t numRead = 0;
+    char *p = NULL;
+    struct inotify_event *event = NULL;
 
     if(argc < 2 ){
-        printf("error\n");
+        fprintf(stdout, "Usage cmd dir_path|file_path\n");
         return 0;
     }
 
     inotifyFd = inotify_init();
-    if(inotifyFd == -1){
-        printf("inotify init failed\n");
+    if(-1 == inotifyFd){
+        fprintf(stdout, "inotify init failed\n");
         return 0;
     }
 
     wd = inotify_add_watch(inotifyFd, argv[1], IN_ALL_EVENTS);      // IN_MODIFY, IN_ACCESS, IN_OPEN, IN_CREATE, IN_DELETE and so on
-    if(wd == -1){
-        printf("error\n");
+    if(-1 == wd){
+        fprintf(stdout, "inotify add watch failed\n");
+        return 0;
     }
 
-    printf("Watching %s using wd %d\n", argv[1], wd);
-
+    fprintf(stdout, "Watching %s using wd %d\n", argv[1], wd);
     while(1){
-        numRead = read(inotifyFd,buf,BUF_LEN);
-        if (numRead == -1 && errno != EAGAIN){
-           perror("read");
+        numRead = read(inotifyFd, buf, BUF_LEN);
+        if (-1 == numRead && EAGAIN != errno){
+            perror("read failed");
+            break;
         }
 
-        printf("\nRead %ldbytes from inotify fd\n", (long)numRead);
+        fprintf(stdout, "\nRead %ldbytes from inotify fd\n", (long)numRead);
         for( p = buf; p < buf + numRead; ){
             event = (struct inotify_event *)p;
             
