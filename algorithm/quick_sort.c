@@ -11,11 +11,11 @@
 
 #include "quick_sort.h"
 
-#define SORT_RECURSIVE          0
+#define SORT_RECURSIVE          1
 
 #define ARRAY_LENGTH            20
 
-#if (1 == SORT_RECURSIVE)
+#if (0 == SORT_RECURSIVE)
 typedef struct __SORT_RANGE{
     int s;
     int e;
@@ -41,8 +41,8 @@ static void print_array(int const *p_array, int len)
 
     fprintf(stdout, "\n");
 }
-#if (1 == SORT_RECURSIVE)
-void quick_sort_recursive(int *p_array, int len)
+#if (0 == SORT_RECURSIVE)
+void quick_sort_norecursive(int *p_array, int len)
 {
     SortRange_t *range = NULL;
     int index = 0;
@@ -143,8 +143,8 @@ int main(int argc, char *argv[])
     fprintf(stdout, "The original: \n");
     print_array((const int *)&g_array, ARRAY_LENGTH);
 
-#if (1 == SORT_RECURSIVE)
-    quick_sort_recursive((int *)&g_array, ARRAY_LENGTH);
+#if (0 == SORT_RECURSIVE)
+    quick_sort_norecursive((int *)&g_array, ARRAY_LENGTH);
 #else
     quick_sort((int *)&g_array, 0, ARRAY_LENGTH - 1);
 #endif
