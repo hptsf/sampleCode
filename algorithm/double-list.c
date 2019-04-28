@@ -62,6 +62,37 @@ static void print_db_list(pDoubleList_t pList)
     fprintf(stdout, "\n");
 }
 
+static int revert_db_list(pDoubleList_t pList)
+{
+    pDoubleList_t start = NULL;
+    pDoubleList_t end = NULL;
+    int num = -1;
+
+    if(NULL == pList){
+        return 0;
+    }
+
+    start = pList->next;
+
+    end = pList;
+    while(NULL != end->next){
+        end = end->next;
+    }
+
+    if(end == start){
+        return 0;
+    }
+
+    while(start != end){
+        num = start->value;
+        start->value = end->value;
+        end->value = num;
+
+        start = start->next;
+        end = end->last;
+    }
+}
+
 static int delete_elem_db_list(pDoubleList_t pList, int val)
 {
     pDoubleList_t temp = NULL;
@@ -80,10 +111,10 @@ static int delete_elem_db_list(pDoubleList_t pList, int val)
 
         del = temp->next;
 
-        del->next->last = del->last;
-        del->last = NULL;
+        if(NULL != del->next){
+            del->next->last = del->last;
+        }
         temp->next = del->next;
-        del->next = NULL;
         free(del);
         pList->value --;
 
@@ -136,12 +167,16 @@ int main(int argc, char *argv[])
     }
     print_db_list(pList);
 
-    fprintf(stdout, "Input number which you want to delete: ");
+    fprintf(stdout, "\nRevert double list is: \n");
+    revert_db_list(pList);
+    print_db_list(pList);
+
+    fprintf(stdout, "\nInput number which you want to delete: ");
     scanf("%d", &val);
     delete_elem_db_list(pList, val);
     print_db_list(pList);
 
-    fprintf(stdout, "Will free the doublelist note\n");
+    fprintf(stdout, "\nWill free the doublelist note\n");
     free_db_list(pList);
     pList = NULL;
     fprintf(stdout, "free doublelist done\n");
